@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Evolution - PvZ2 Mod</title>
+
+  <style>
+    /* RESET & MODERN TYPOGRAPHY */
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+
+    /* HARDCORE RED SPACE BACKGROUND */
+    body {
+      min-height: 100vh; overflow-x: hidden; color: #fff; background-color: #0d0101;
+      background-image: radial-gradient(circle at top right, rgba(255, 0, 60, 0.15), transparent 50%), url('evolution-space.png');
+      background-size: cover; background-position: center center; background-attachment: fixed;
+    }
+
+    /* NAV */
+    nav { display: flex; justify-content: space-between; align-items: center; padding: 24px 60px; background: rgba(15, 2, 2, 0.8); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); position: sticky; top: 0; z-index: 10; border-bottom: 1px solid rgba(255, 0, 60, 0.3); box-shadow: 0 4px 30px rgba(0, 0, 0, 0.9); }
+    nav h1 { font-size: 32px; font-weight: 900; text-transform: uppercase; letter-spacing: 3px; background: linear-gradient(90deg, #ff4d00, #ff003c); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.8)); }
+    nav .menu { display: flex; gap: 35px; flex-wrap: wrap; }
+    nav .menu button { background: none; border: none; color: #cbd5e1; font-size: 16px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; cursor: pointer; transition: all 0.3s ease; padding: 8px 15px; }
+    nav .menu button:hover { color: #ff003c; transform: translateY(-3px); text-shadow: 0 0 10px rgba(255, 0, 60, 0.5); }
+
+    /* SECTIONS */
+    section { display: none; min-height: calc(100vh - 80px); padding: 80px 30px; text-align: center; flex-direction: column; align-items: center; }
+    section.active { display: flex; animation: fadeSlideUp 0.6s cubic-bezier(0.165, 0.84, 0.44, 1) forwards; }
+    #home, #download, #developer, #community, #tutorial, #modinfo, #feedback { justify-content: flex-start; }
+
+    @keyframes fadeSlideUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* BUTTONS - Hardcore Red/Orange Gradient */
+    .blue-btn { position: relative; overflow: hidden; display: inline-block; padding: 18px 55px; border-radius: 60px; background: linear-gradient(135deg, #a00020 0%, #ff003c 50%, #ff4d00 100%); background-size: 200% auto; color: #ffffff; font-size: 18px; font-weight: 800; text-transform: uppercase; letter-spacing: 2.5px; border: 1px solid rgba(255,255,255,0.2); box-shadow: 0 10px 25px rgba(255, 0, 60, 0.4), inset 0 2px 2px rgba(255, 255, 255, 0.3); margin: 15px 12px; cursor: pointer; transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1); text-decoration: none; z-index: 1; text-shadow: 0 2px 5px rgba(0,0,0,0.6); }
+    .blue-btn:hover { background-position: right center; transform: translateY(-5px) scale(1.03); box-shadow: 0 18px 35px rgba(255, 77, 0, 0.6), inset 0 2px 2px rgba(255, 255, 255, 0.5); }
+    .blue-btn::before { content: ''; position: absolute; top: 0; left: -150%; width: 50%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent); transform: skewX(-25deg); transition: left 0.5s ease; z-index: -1; }
+    .blue-btn:hover::before { left: 150%; }
+    .pressed { transform: scale(0.95) !important; box-shadow: 0 3px 12px rgba(255, 0, 60, 0.6) !important; transition: none;}
+
+    /* HOME */
+    .logo { width: 550px; max-width: 90%; margin-bottom: 35px; will-change: transform; animation: smoothFloat 7s ease-in-out infinite; filter: drop-shadow(0 15px 35px rgba(255,0,0,0.4)); }
+    @keyframes smoothFloat { 0%, 100% { transform: translate3d(0, 0, 0); } 50% { transform: translate3d(0, -10px, 0); } }
+    .desc { max-width: 750px; opacity: 0.95; margin-bottom: 45px; line-height: 1.8; font-size: 20px; color: #f8e1e1; text-shadow: 0 3px 10px rgba(0,0,0,0.9); font-weight: 500;}
+
+    /* BEAUTIFUL NAME HIGHLIGHT */
+    .highlight-name {
+      color: #ff003c;
+      font-weight: 900;
+      text-shadow: 0 0 15px rgba(255, 0, 60, 0.8);
+      letter-spacing: 1px;
+    }
+
+    /* CARDS */
+    .card { background: linear-gradient(145deg, rgba(25, 4, 4, 0.85), rgba(10, 1, 1, 0.95)); padding: 60px; border-radius: 28px; width: 100%; max-width: 850px; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); margin-bottom: 50px; text-align: left; border: 1px solid rgba(255, 255, 255, 0.05); border-top: 1px solid rgba(255, 77, 0, 0.5); border-left: 1px solid rgba(255, 0, 60, 0.5); box-shadow: 0 20px 60px rgba(0,0,0,0.9), inset 0 1px 1px rgba(255, 255, 255, 0.05); transition: transform 0.4s ease, border-color 0.4s ease; }
+    .card:hover { transform: translateY(-10px); border-top-color: rgba(255, 0, 60, 0.8); border-left-color: rgba(255, 77, 0, 0.8); box-shadow: 0 30px 80px rgba(255, 0, 30, 0.15); }
+    .card h2 { margin-bottom: 30px; color: #ff003c; font-size: 40px; font-weight: 900; letter-spacing: 1.5px; border-bottom: 2px solid rgba(255, 0, 60, 0.2); padding-bottom: 20px; text-shadow: 0 0 15px rgba(255, 0, 60, 0.5); }
+    .card p { opacity: 0.95; margin-bottom: 25px; font-size: 20px; line-height: 1.8; color: #f1e2e2; }
+
+    footer { text-align: center; font-size: 14px; opacity: 0.6; padding: 30px; color: #ff003c; letter-spacing: 2px; text-transform: uppercase; font-weight: 700; border-top: 1px solid rgba(255,0,60,0.15);}
+
+    /* MOBILE */
+    @media (max-width: 850px) {
+      nav { flex-direction: column; padding: 15px 20px; gap: 15px; }
+      nav .menu { width: 100%; flex-wrap: nowrap; overflow-x: auto; justify-content: flex-start; gap: 15px; -webkit-overflow-scrolling: touch;}
+      nav .menu button { white-space: nowrap; font-size: 14px; padding: 5px 8px; }
+      section { padding: 30px 15px; min-height: auto; }
+      .card { backdrop-filter: none; background: linear-gradient(145deg, rgba(25, 4, 4, 0.95), rgba(10, 1, 1, 1)); }
+    }
+
+    /* COLORFUL MOD INFO OVERRIDES FOR RED THEME */
+    #modinfo .card h2 {
+      background: linear-gradient(90deg, #ff003c, #ff4d00);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      border-bottom: 2px solid rgba(255, 0, 60, 0.3);
+    }
+    #modinfo .card strong {
+      color: #ff003c;
+      text-shadow: 0 0 10px rgba(255, 0, 60, 0.5);
+    }
+    #modinfo ul {
+      list-style: none;
+      margin: 30px 0;
+      padding: 0;
+    }
+    #modinfo li {
+      margin-bottom: 15px;
+      padding: 20px;
+      background: rgba(255, 255, 255, 0.02);
+      border-radius: 15px;
+      border-left: 6px solid #ff003c;
+      font-size: 18px;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+    }
+    #modinfo li::before {
+      content: '✦';
+      margin-right: 15px;
+      font-size: 24px;
+      color: #ff4d00;
+    }
+    #modinfo li:nth-child(1) { border-left-color: #ff003c; color: #ffe6e6; }
+    #modinfo li:nth-child(2) { border-left-color: #ff4d00; color: #ffebd6; }
+    #modinfo li:nth-child(3) { border-left-color: #e74c3c; color: #fceceb; }
+    #modinfo li:nth-child(4) { border-left-color: #c0392b; color: #fae1df; }
+    #modinfo li:nth-child(5) { border-left-color: #a00020; color: #f5d7db; }
+    
+    #modinfo li:hover {
+      transform: translateX(10px);
+      background: rgba(255, 0, 60, 0.08);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+    }
+    
+    ::-webkit-scrollbar { width: 10px; }
+    ::-webkit-scrollbar-track { background: #020613; }
+    ::-webkit-scrollbar-thumb { background: linear-gradient(to bottom, #ff4d00, #ff003c); border-radius: 10px; }
+    ::-webkit-scrollbar-thumb:hover { background: linear-gradient(to bottom, #ff7b00, #ff1a4f); }
+  </style>
+</head>
+<body>
+
+  <!-- AUTO-PLAY MUSIC FALLBACK -->
+  <audio id="bgMusic" loop autoplay>
+    <source src="evolution-theme.mp3" type="audio/mpeg">
+  </audio>
+
+  <audio id="clickSound">
+    <source src="https://freesound.org/data/previews/256/256113_3263906-lq.mp3">
+  </audio>
+
+  <nav>
+    <h1>Evolution</h1>
+    <div class="menu">
+      <button onclick="showPage('home')">Home</button>
+      <button onclick="showPage('download')">Download</button>
+      <button onclick="showPage('developer')">Developer</button>
+      <button onclick="showPage('community')">Community</button>
+      <button onclick="showPage('tutorial')">Tutorial</button>
+      <button onclick="showPage('modinfo')">Mod Information</button>
+      <button onclick="showPage('feedback')">Feedback</button>
+    </div>
+  </nav>
+
+  <section id="home" class="active">
+    <img src="Untitled202_20260920231320.png" class="logo" alt="Evolution Logo">
+    <p class="desc"><span class="highlight-name">Evolution</span> is a Plants vs Zombies 2 mod featuring unique fusion and upgrade mechanics. PvZ1 world full of nostalgia, and experience a fresh twist on classic gameplay!</p>
+    <div class="blue-btn" onclick="showPage('download')">Download Now</div>
+  </section>
+
+  <section id="download">
+    <div class="card">
+      <h2>Download</h2>
+      <p>Secure the Evolution mod on your preferred platform below and start fusing your plants.</p>
+      <div class="blue-btn" onclick="downloadFile('https://drive.google.com/file/d/1Kr1q42Rn9k1Pzdbc0TNI_Oyh4vbLPEce/view?usp=drivesdk')">Google Drive</div>
+      <a class="blue-btn" href="https://mega.nz/file/KgxjzLqY#o3WbVZtgH11CTOaPxMmt665rJmExHcp4V8UW55QLEi0" target="_blank">MEGA</a>
+      <a class="blue-btn" href="https://www.mediafire.com/file/9a5h0mfopzdc7ly/Lost_Leaves_1.9.zip/file" target="_blank">MediaFire</a>
+    </div>
+  </section>
+
+  <section id="developer">
+    <div class="card">
+      <h2>Developer</h2>
+      <p>Created by the one and only <strong>Scaredy Leaves</strong></p>
+      <a class="blue-btn" href="https://youtube.com/@pvz2scaredyleaves" target="_blank">Subscribe on YouTube</a>
+    </div>
+  </section>
+
+  <section id="community">
+    <div class="card">
+      <h2>Community</h2>
+      <p>Join the official Evolution Discord to connect with fellow players.</p>
+      <a class="blue-btn" href="https://discord.gg/km75SfmJZz" target="_blank">Join Official Discord</a>
+    </div>
+  </section>
+
+  <section id="tutorial">
+    <div class="card">
+      <h2>Tutorial</h2>
+      <p>Learn how to properly install the Evolution mod so you can dive right into the action.</p>
+      <a class="blue-btn" href="https://youtu.be/MZhRg4VHmXA?si=G6ud3zc4_LERbJZ1" target="_blank">Watch Tutorial</a>
+    </div>
+  </section>
+
+  <section id="modinfo">
+    <div class="card">
+      <h2>Mod Information</h2>
+      <p><span class="highlight-name">Evolution</span> reimagines the PvZ2 experience by introducing a deep fusion and upgrade mechanic. Combine your favorite plants to unlock powerful new forms and build the ultimate defense.</p>
+      
+      <ul>
+        <li>Fusion and upgrade mechanics to power up your plants</li>
+        <li>A brand-new, nostalgia-filled PvZ1 World to explore</li>
+        <li>New classic zombies and lawns</li>
+        <li>Balanced gameplay that offers a fun, rewarding experience</li>
+        <li>Creative combinations that open up endless strategic possibilities</li>
+      </ul>
+      
+      <p><span class="highlight-name">Evolution</span> is made <strong>for all PvZ fans</strong> who want to experience the classic nostalgia of the original game while discovering exciting new ways to play!</p>
+    </div>
+  </section>
+
+  <section id="feedback">
+    <div class="card">
+      <h2>Feedback & Comments</h2>
+      <p>What is your favorite plant fusion? Share your thoughts below!</p>
+      <div id="disqus_container_feedback" style="margin-top: 30px; background: rgba(15, 2, 2, 0.6); padding: 20px; border-radius: 15px; border: 1px solid rgba(255,0,60,0.2);">
+        <div id="disqus_thread"></div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div style="margin-bottom: 20px;">
+      <!-- Visitor Badge themed to red/black -->
+      <img src="https://api.visitorbadge.io/api/visitors?path=evolution.pvz2mod&countColor=%23ff003c&labelColor=%230d0101&label=VISITORS" alt="Website Visitors">
+    </div>
+    © All rights reserved to Scaredy Leaves
+  </footer>
+
+  <script>
+    const clickSound = document.getElementById("clickSound");
+    const bgMusic = document.getElementById("bgMusic");
+
+    function playClick() { clickSound.currentTime = 0; clickSound.play().catch(()=>{}); }
+
+    // AUTO-PLAY MUSIC FALLBACK
+    window.addEventListener('DOMContentLoaded', () => {
+        bgMusic.play().catch(() => {});
+    });
+
+    document.addEventListener("click", () => {
+        if (bgMusic.paused) {
+            bgMusic.play().catch(()=>{});
+        }
+    }, { once: true });
+
+    document.addEventListener("mousedown", e => { if (e.target.classList.contains("blue-btn") || e.target.tagName === "BUTTON") { e.target.classList.add("pressed"); playClick(); } });
+    document.addEventListener("mouseup", e => { if (e.target.classList.contains("blue-btn") || e.target.tagName === "BUTTON") { e.target.classList.remove("pressed"); } });
+
+    function showPage(id) {
+      document.querySelectorAll("section").forEach(s => s.classList.remove("active"));
+      document.getElementById(id).classList.add("active");
+      window.scrollTo(0, 0); 
+
+      // DISQUS MANAGEMENT (Feedback Only)
+      if (id === 'feedback') {
+          reloadDisqus('evolution-feedback');
+      }
+    }
+
+    function reloadDisqus(newIdentifier) {
+      if (typeof DISQUS !== 'undefined') {
+          DISQUS.reset({
+              reload: true,
+              config: function () {
+                  this.page.identifier = newIdentifier;
+                  this.page.url = window.location.href.split('#')[0] + '#' + newIdentifier;
+              }
+          });
+      }
+    }
+
+    // INITIAL DISQUS LOAD (Configured for Evolution)
+    var disqus_config = function () {
+        this.page.url = window.location.href;
+        this.page.identifier = 'evolution-home';
+    };
+    (function() {
+        var d = document, s = d.createElement('script');
+        s.src = 'https://lost-leaves.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+
+    function downloadFile(url) { const a = document.createElement("a"); a.href = url; document.body.appendChild(a); a.click(); document.body.removeChild(a); }
+  </script>
+</body>
+</html>

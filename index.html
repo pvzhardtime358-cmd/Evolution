@@ -1,124 +1,161 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Evolution - PvZ2 Mod</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Evolution - PvZ2 Mod</title>
+<meta name="theme-color" content="#05060f">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@600;800;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #05060f; --panel: rgba(10, 14, 32, .8);
+    --blue: #2f8cff; --cyan: #29d4ff; --red: #ff2d55; --orange: #ff6a3d;
+    --muted: #9aa7c7;
+    --grad: linear-gradient(135deg, var(--blue), var(--red));
+    --head: 'Outfit', 'Inter', system-ui, sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    min-height: 100vh; overflow-x: hidden; color: #e9eefc; background-color: var(--bg);
+    font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    background-image:
+      radial-gradient(900px 500px at 8% -5%, rgba(47,140,255,.28), transparent 60%),
+      radial-gradient(900px 600px at 100% 100%, rgba(255,45,85,.24), transparent 60%),
+      url('evolution-space.png');
+    background-size: auto, auto, cover; background-position: center; background-attachment: fixed;
+  }
+  body::before { content: ''; position: fixed; inset: 0; background: linear-gradient(180deg, rgba(5,6,15,.55), rgba(5,6,15,.82)); z-index: -1; }
 
-  <style>
-    /* RESET & MODERN TYPOGRAPHY */
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+  /* NAV */
+  nav { position: sticky; top: 0; z-index: 20; display: flex; justify-content: space-between; align-items: center; padding: 18px 48px; background: rgba(5,6,15,.74); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border-bottom: 1px solid rgba(255,255,255,.08); }
+  nav::after { content: ''; position: absolute; left: 0; right: 0; bottom: -1px; height: 2px; background: var(--grad); opacity: .85; }
+  nav h1 { font: 900 28px var(--head); letter-spacing: 4px; text-transform: uppercase; background: var(--grad); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 0 14px rgba(47,140,255,.35)); }
+  .menu { display: flex; gap: 6px; flex-wrap: wrap; }
+  .menu button { background: none; border: 0; color: var(--muted); font: 600 14px var(--head); letter-spacing: 1.2px; text-transform: uppercase; padding: 10px 16px; border-radius: 10px; cursor: pointer; transition: color .25s, background .25s; }
+  .menu button:hover { color: #fff; background: rgba(47,140,255,.14); }
+  .menu button.on { color: #fff; background: linear-gradient(135deg, rgba(47,140,255,.3), rgba(255,45,85,.3)); box-shadow: inset 0 0 0 1px rgba(255,255,255,.12); }
 
-    /* HARDCORE RED SPACE BACKGROUND */
-    body {
-      min-height: 100vh; overflow-x: hidden; color: #fff; background-color: #0d0101;
-      background-image: radial-gradient(circle at top right, rgba(255, 0, 60, 0.15), transparent 50%), url('evolution-space.png');
-      background-size: cover; background-position: center center; background-attachment: fixed;
-    }
+  /* PAGES */
+  section { display: none; flex-direction: column; align-items: center; justify-content: flex-start; text-align: center; padding: 70px 24px 40px; min-height: calc(100vh - 140px); }
+  section.active { display: flex; animation: rise .6s cubic-bezier(.16,.84,.44,1); }
+  @keyframes rise { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: none; } }
 
-    /* NAV */
-    nav { display: flex; justify-content: space-between; align-items: center; padding: 24px 60px; background: rgba(15, 2, 2, 0.8); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); position: sticky; top: 0; z-index: 10; border-bottom: 1px solid rgba(255, 0, 60, 0.3); box-shadow: 0 4px 30px rgba(0, 0, 0, 0.9); }
-    nav h1 { font-size: 32px; font-weight: 900; text-transform: uppercase; letter-spacing: 3px; background: linear-gradient(90deg, #ff4d00, #ff003c); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.8)); }
-    nav .menu { display: flex; gap: 35px; flex-wrap: wrap; }
-    nav .menu button { background: none; border: none; color: #cbd5e1; font-size: 16px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; cursor: pointer; transition: all 0.3s ease; padding: 8px 15px; }
-    nav .menu button:hover { color: #ff003c; transform: translateY(-3px); text-shadow: 0 0 10px rgba(255, 0, 60, 0.5); }
+  /* BUTTONS */
+  .btn { position: relative; overflow: hidden; display: inline-block; padding: 16px 42px; margin: 8px 10px 8px 0; border-radius: 14px; border: 1px solid rgba(255,255,255,.18); color: #fff; font: 800 15px var(--head); letter-spacing: 2px; text-transform: uppercase; text-decoration: none; cursor: pointer; transition: transform .3s, box-shadow .3s; }
+  .btn::before { content: ''; position: absolute; top: 0; left: -120%; width: 60%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,.35), transparent); transform: skewX(-25deg); transition: left .6s; }
+  .btn:hover::before { left: 140%; }
+  .btn:hover { transform: translateY(-4px); }
+  .btn:active, .btn.pressed { transform: scale(.96); }
+  .red { background: linear-gradient(135deg, #c3153a, var(--red) 55%, var(--orange)); box-shadow: 0 10px 30px rgba(255,45,85,.4); }
+  .red:hover { box-shadow: 0 16px 40px rgba(255,45,85,.6); }
+  .blue { background: linear-gradient(135deg, #1b57d6, var(--blue) 55%, var(--cyan)); box-shadow: 0 10px 30px rgba(47,140,255,.4); }
+  .blue:hover { box-shadow: 0 16px 40px rgba(47,140,255,.6); }
 
-    /* SECTIONS */
-    section { display: none; min-height: calc(100vh - 80px); padding: 80px 30px; text-align: center; flex-direction: column; align-items: center; }
-    section.active { display: flex; animation: fadeSlideUp 0.6s cubic-bezier(0.165, 0.84, 0.44, 1) forwards; }
-    #home, #download, #developer, #community, #tutorial, #modinfo, #feedback { justify-content: flex-start; }
+  /* HOME */
+  .logo { width: 550px; max-width: 90%; margin-bottom: 35px; animation: float 7s ease-in-out infinite; filter: drop-shadow(0 0 30px rgba(47,140,255,.45)) drop-shadow(0 12px 30px rgba(255,45,85,.4)); }
+  @keyframes float { 50% { transform: translateY(-12px); } }
+  .desc { max-width: 750px; font-size: 20px; line-height: 1.8; color: #c9d4f2; margin-bottom: 40px; }
+  .hl { font-weight: 800; background: var(--grad); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+  #home .btn { margin: 8px; }
 
-    @keyframes fadeSlideUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
+  /* CARDS */
+  .card { width: 100%; max-width: 850px; padding: 56px; margin-bottom: 40px; text-align: left; border-radius: 26px; background: var(--panel); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border: 1px solid rgba(255,255,255,.07); position: relative; box-shadow: 0 24px 70px rgba(0,0,0,.6); transition: transform .4s, box-shadow .4s; }
+  .card:hover { transform: translateY(-6px); box-shadow: 0 30px 80px rgba(47,140,255,.18), 0 10px 40px rgba(255,45,85,.12); }
+  .card::before { content: ''; position: absolute; top: 0; left: 40px; right: 40px; height: 3px; border-radius: 0 0 6px 6px; background: var(--grad); }
+  .card h2 { font: 900 clamp(28px, 4vw, 40px) var(--head); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 24px; padding-bottom: 18px; border-bottom: 1px solid rgba(255,255,255,.1); background: var(--grad); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+  .card p { font-size: 20px; line-height: 1.8; color: #c9d4f2; margin-bottom: 24px; }
+  .card strong { color: #fff; }
 
-    /* BUTTONS - Hardcore Red/Orange Gradient */
-    .blue-btn { position: relative; overflow: hidden; display: inline-block; padding: 18px 55px; border-radius: 60px; background: linear-gradient(135deg, #a00020 0%, #ff003c 50%, #ff4d00 100%); background-size: 200% auto; color: #ffffff; font-size: 18px; font-weight: 800; text-transform: uppercase; letter-spacing: 2.5px; border: 1px solid rgba(255,255,255,0.2); box-shadow: 0 10px 25px rgba(255, 0, 60, 0.4), inset 0 2px 2px rgba(255, 255, 255, 0.3); margin: 15px 12px; cursor: pointer; transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1); text-decoration: none; z-index: 1; text-shadow: 0 2px 5px rgba(0,0,0,0.6); }
-    .blue-btn:hover { background-position: right center; transform: translateY(-5px) scale(1.03); box-shadow: 0 18px 35px rgba(255, 77, 0, 0.6), inset 0 2px 2px rgba(255, 255, 255, 0.5); }
-    .blue-btn::before { content: ''; position: absolute; top: 0; left: -150%; width: 50%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent); transform: skewX(-25deg); transition: left 0.5s ease; z-index: -1; }
-    .blue-btn:hover::before { left: 150%; }
-    .pressed { transform: scale(0.95) !important; box-shadow: 0 3px 12px rgba(255, 0, 60, 0.6) !important; transition: none;}
+  /* MOD INFO LIST */
+  ul { list-style: none; margin: 28px 0; }
+  ul li { display: flex; align-items: center; gap: 16px; margin-bottom: 14px; padding: 18px 20px; font-size: 18px; line-height: 1.5; border-radius: 14px; background: rgba(255,255,255,.035); border-left: 5px solid var(--blue); transition: transform .3s, background .3s; }
+  ul li:nth-child(even) { border-left-color: var(--red); }
+  ul li::before { content: ''; flex: none; width: 10px; height: 10px; transform: rotate(45deg); background: var(--cyan); box-shadow: 0 0 10px var(--cyan); }
+  ul li:nth-child(even)::before { background: var(--orange); box-shadow: 0 0 10px var(--orange); }
+  ul li:hover { transform: translateX(8px); background: rgba(47,140,255,.1); }
 
-    /* HOME */
-    .logo { width: 550px; max-width: 90%; margin-bottom: 35px; will-change: transform; animation: smoothFloat 7s ease-in-out infinite; filter: drop-shadow(0 15px 35px rgba(255,0,0,0.4)); }
-    @keyframes smoothFloat { 0%, 100% { transform: translate3d(0, 0, 0); } 50% { transform: translate3d(0, -10px, 0); } }
-    .desc { max-width: 750px; opacity: 0.95; margin-bottom: 45px; line-height: 1.8; font-size: 20px; color: #f8e1e1; text-shadow: 0 3px 10px rgba(0,0,0,0.9); font-weight: 500;}
+  footer { text-align: center; padding: 34px 20px 40px; color: var(--muted); font: 600 12px var(--head); letter-spacing: 2px; text-transform: uppercase; border-top: 1px solid rgba(255,255,255,.07); }
+  footer div { margin-bottom: 20px; }
 
-    /* BEAUTIFUL NAME HIGHLIGHT */
-    .highlight-name {
-      color: #ff003c;
-      font-weight: 900;
-      text-shadow: 0 0 15px rgba(255, 0, 60, 0.8);
-      letter-spacing: 1px;
-    }
+  ::-webkit-scrollbar { width: 10px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: linear-gradient(var(--blue), var(--red)); border-radius: 10px; }
 
-    /* CARDS */
-    .card { background: linear-gradient(145deg, rgba(25, 4, 4, 0.85), rgba(10, 1, 1, 0.95)); padding: 60px; border-radius: 28px; width: 100%; max-width: 850px; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); margin-bottom: 50px; text-align: left; border: 1px solid rgba(255, 255, 255, 0.05); border-top: 1px solid rgba(255, 77, 0, 0.5); border-left: 1px solid rgba(255, 0, 60, 0.5); box-shadow: 0 20px 60px rgba(0,0,0,0.9), inset 0 1px 1px rgba(255, 255, 255, 0.05); transition: transform 0.4s ease, border-color 0.4s ease; }
-    .card:hover { transform: translateY(-10px); border-top-color: rgba(255, 0, 60, 0.8); border-left-color: rgba(255, 77, 0, 0.8); box-shadow: 0 30px 80px rgba(255, 0, 30, 0.15); }
-    .card h2 { margin-bottom: 30px; color: #ff003c; font-size: 40px; font-weight: 900; letter-spacing: 1.5px; border-bottom: 2px solid rgba(255, 0, 60, 0.2); padding-bottom: 20px; text-shadow: 0 0 15px rgba(255, 0, 60, 0.5); }
-    .card p { opacity: 0.95; margin-bottom: 25px; font-size: 20px; line-height: 1.8; color: #f1e2e2; }
 
-    footer { text-align: center; font-size: 14px; opacity: 0.6; padding: 30px; color: #ff003c; letter-spacing: 2px; text-transform: uppercase; font-weight: 700; border-top: 1px solid rgba(255,0,60,0.15);}
+  /* AMBIENT GLOW */
+  .orb { position: fixed; z-index: -1; border-radius: 50%; filter: blur(80px); opacity: .32; pointer-events: none; }
+  .o1 { width: 420px; height: 420px; background: var(--blue); top: 12%; left: -120px; animation: drift1 18s ease-in-out infinite alternate; }
+  .o2 { width: 480px; height: 480px; background: var(--red); bottom: -140px; right: -140px; animation: drift2 22s ease-in-out infinite alternate; }
+  @keyframes drift1 { to { transform: translate(200px, 140px); } }
+  @keyframes drift2 { to { transform: translate(-220px, -120px); } }
 
-    /* MOBILE */
-    @media (max-width: 850px) {
-      nav { flex-direction: column; padding: 15px 20px; gap: 15px; }
-      nav .menu { width: 100%; flex-wrap: nowrap; overflow-x: auto; justify-content: flex-start; gap: 15px; -webkit-overflow-scrolling: touch;}
-      nav .menu button { white-space: nowrap; font-size: 14px; padding: 5px 8px; }
-      section { padding: 30px 15px; min-height: auto; }
-      .card { backdrop-filter: none; background: linear-gradient(145deg, rgba(25, 4, 4, 0.95), rgba(10, 1, 1, 1)); }
-    }
+  /* ANIMATED GRADIENTS */
+  nav h1, .card h2, .hl, .show-title span { background-image: linear-gradient(90deg, var(--blue), var(--red), var(--blue)); background-size: 200% auto; animation: shine 6s linear infinite; }
+  .card::before, nav::after { background-image: linear-gradient(90deg, var(--blue), var(--red), var(--blue)); background-size: 200% auto; animation: shine 6s linear infinite; }
+  @keyframes shine { to { background-position: 200% center; } }
 
-    /* COLORFUL MOD INFO OVERRIDES FOR RED THEME */
-    #modinfo .card h2 {
-      background: linear-gradient(90deg, #ff003c, #ff4d00);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      border-bottom: 2px solid rgba(255, 0, 60, 0.3);
-    }
-    #modinfo .card strong {
-      color: #ff003c;
-      text-shadow: 0 0 10px rgba(255, 0, 60, 0.5);
-    }
-    #modinfo ul {
-      list-style: none;
-      margin: 30px 0;
-      padding: 0;
-    }
-    #modinfo li {
-      margin-bottom: 15px;
-      padding: 20px;
-      background: rgba(255, 255, 255, 0.02);
-      border-radius: 15px;
-      border-left: 6px solid #ff003c;
-      font-size: 18px;
-      transition: all 0.3s ease;
-      display: flex;
-      align-items: center;
-    }
-    #modinfo li::before {
-      content: '✦';
-      margin-right: 15px;
-      font-size: 24px;
-      color: #ff4d00;
-    }
-    #modinfo li:nth-child(1) { border-left-color: #ff003c; color: #ffe6e6; }
-    #modinfo li:nth-child(2) { border-left-color: #ff4d00; color: #ffebd6; }
-    #modinfo li:nth-child(3) { border-left-color: #e74c3c; color: #fceceb; }
-    #modinfo li:nth-child(4) { border-left-color: #c0392b; color: #fae1df; }
-    #modinfo li:nth-child(5) { border-left-color: #a00020; color: #f5d7db; }
-    
-    #modinfo li:hover {
-      transform: translateX(10px);
-      background: rgba(255, 0, 60, 0.08);
-      box-shadow: 0 5px 15px rgba(0,0,0,0.5);
-    }
-    
-    ::-webkit-scrollbar { width: 10px; }
-    ::-webkit-scrollbar-track { background: #020613; }
-    ::-webkit-scrollbar-thumb { background: linear-gradient(to bottom, #ff4d00, #ff003c); border-radius: 10px; }
-    ::-webkit-scrollbar-thumb:hover { background: linear-gradient(to bottom, #ff7b00, #ff1a4f); }
-  </style>
+  /* SHOWCASE */
+  @property --glow { syntax: '<color>'; inherits: true; initial-value: #b45cff; }
+  @property --accent { syntax: '<color>'; inherits: true; initial-value: #ff2d55; }
+  html { --accent: #ff2d55; transition: --accent .9s ease; }
+  .o2 { background: var(--accent); }
+  .showcase { width: 100%; max-width: 1050px; margin-top: 90px; }
+  .show-title { display: flex; align-items: center; gap: 24px; margin-bottom: 44px; font: 900 clamp(26px, 4vw, 38px) var(--head); letter-spacing: 6px; text-transform: uppercase; }
+  .show-title span { -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+  .show-title::before, .show-title::after { content: ''; flex: 1; height: 2px; background: linear-gradient(90deg, transparent, var(--blue), var(--red), transparent); }
+
+  .stage { --glow: #b45cff; display: grid; grid-template-columns: 1.05fr 1fr; align-items: center; gap: 36px; padding: 36px 48px 36px 28px; text-align: left; border-radius: 28px; position: relative; overflow: hidden;
+    background: radial-gradient(circle at 27% 50%, color-mix(in srgb, var(--glow) 40%, transparent), transparent 64%), var(--panel);
+    border: 1px solid color-mix(in srgb, var(--glow) 40%, rgba(255,255,255,.08)); box-shadow: 0 24px 70px rgba(0,0,0,.6), 0 0 80px color-mix(in srgb, var(--glow) 18%, transparent);
+    transition: --glow .7s ease; }
+  .stage::before { content: ''; position: absolute; top: 0; left: 40px; right: 40px; height: 3px; border-radius: 0 0 6px 6px; background: var(--glow); box-shadow: 0 0 18px var(--glow); }
+  .stage-art { position: relative; aspect-ratio: 1; display: grid; place-items: center; }
+  .stage-art::before { content: ''; position: absolute; inset: 4%; border-radius: 50%; background: conic-gradient(from 0deg, transparent 0 55%, var(--glow)); -webkit-mask: radial-gradient(circle, transparent 66%, #000 67% 68.5%, transparent 70%); mask: radial-gradient(circle, transparent 66%, #000 67% 68.5%, transparent 70%); animation: spin 14s linear infinite; }
+  @keyframes spin { to { rotate: 360deg; } }
+  .stage-art img { position: relative; width: 78%; height: 78%; object-fit: contain; filter: drop-shadow(0 18px 22px rgba(0,0,0,.55)); transform: perspective(700px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)); transition: transform .25s ease-out; animation: bob 6s ease-in-out infinite; }
+  .stage-art img.swap { animation: bob 6s ease-in-out infinite, pop .55s cubic-bezier(.16,.84,.44,1); }
+  @keyframes bob { 50% { translate: 0 -12px; } }
+  @keyframes pop { from { opacity: 0; scale: .8; rotate: -6deg; } }
+  .stage-info h3 { font: 900 clamp(30px, 4.2vw, 48px)/1.05 var(--head); color: #fff; margin-bottom: 16px; text-shadow: 0 0 28px color-mix(in srgb, var(--glow) 70%, transparent); }
+  .stage-info p { font-size: 19px; line-height: 1.7; color: #c9d4f2; max-width: 30ch; }
+
+  .picker { display: flex; justify-content: center; flex-wrap: wrap; gap: 14px; margin-top: 24px; }
+  .pick { --g: #fff; position: relative; overflow: hidden; width: 92px; height: 92px; padding: 10px; border-radius: 20px; cursor: pointer; background: var(--panel); border: 1px solid rgba(255,255,255,.1); transition: transform .25s, border-color .25s, box-shadow .25s; }
+  .pick img { width: 100%; height: 100%; object-fit: contain; display: block; opacity: .6; transition: opacity .25s; pointer-events: none; }
+  .pick:hover { transform: translateY(-5px); }
+  .pick:hover img, .pick[aria-selected="true"] img { opacity: 1; }
+  .pick[aria-selected="true"] { border-color: var(--g); box-shadow: 0 0 0 1px var(--g), 0 10px 30px color-mix(in srgb, var(--g) 45%, transparent); }
+  .pick[aria-selected="true"]::after { content: ''; position: absolute; left: 0; bottom: 0; height: 4px; width: 100%; background: var(--g); transform-origin: left; animation: fill 6s linear forwards; }
+  .stage.paused ~ .picker .pick::after { animation-play-state: paused; }
+  @keyframes fill { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+  .pick:focus-visible, .btn:focus-visible, .menu button:focus-visible { outline: 3px solid var(--cyan); outline-offset: 3px; }
+
+  @media (max-width: 850px) {
+    nav { flex-direction: column; gap: 10px; padding: 12px 14px; }
+    .menu { width: 100%; flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; }
+    .menu button { white-space: nowrap; padding: 8px 12px; font-size: 13px; }
+    section { padding: 40px 16px 30px; min-height: auto; }
+    .card { padding: 36px 22px; backdrop-filter: none; }
+    .btn { padding: 14px 26px; }
+    .desc, .card p { font-size: 17px; }
+    .showcase { margin-top: 60px; }
+    .show-title { letter-spacing: 3px; gap: 14px; }
+    .stage { grid-template-columns: 1fr; gap: 8px; padding: 28px 22px 32px; text-align: center; }
+    .stage-art { width: min(78%, 340px); margin: 0 auto; }
+    .stage-info p { margin: 0 auto; }
+    .picker { gap: 10px; }
+    .pick { width: 60px; height: 60px; padding: 7px; border-radius: 16px; }
+    .orb { filter: blur(60px); }
+  }
+  @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+</style>
 </head>
 <body>
+
+  <div class="orb o1"></div>
+  <div class="orb o2"></div>
 
   <!-- AUTO-PLAY MUSIC FALLBACK -->
   <audio id="bgMusic" loop autoplay>
@@ -132,29 +169,50 @@
   <nav>
     <h1>Evolution</h1>
     <div class="menu">
-      <button onclick="showPage('home')">Home</button>
-      <button onclick="showPage('download')">Download</button>
-      <button onclick="showPage('developer')">Developer</button>
-      <button onclick="showPage('community')">Community</button>
-      <button onclick="showPage('tutorial')">Tutorial</button>
-      <button onclick="showPage('modinfo')">Mod Information</button>
-      <button onclick="showPage('feedback')">Feedback</button>
+      <button data-page="home" class="on" onclick="showPage('home')">Home</button>
+      <button data-page="download" onclick="showPage('download')">Download</button>
+      <button data-page="developer" onclick="showPage('developer')">Developer</button>
+      <button data-page="community" onclick="showPage('community')">Community</button>
+      <button data-page="tutorial" onclick="showPage('tutorial')">Tutorial</button>
+      <button data-page="modinfo" onclick="showPage('modinfo')">Mod Information</button>
     </div>
   </nav>
 
   <section id="home" class="active">
     <img src="Untitled202_20260920231320.png" class="logo" alt="Evolution Logo">
-    <p class="desc"><span class="highlight-name">Evolution</span> is a Plants vs Zombies 2 mod featuring unique fusion and upgrade mechanics. PvZ1 world full of nostalgia, and experience a fresh twist on classic gameplay!</p>
-    <div class="blue-btn" onclick="showPage('download')">Download Now</div>
+    <p class="desc"><span class="hl">Evolution</span> is a Plants vs Zombies 2 mod featuring unique fusion and upgrade mechanics. Memory Adventure world full of nostalgia, and experience a fresh twist on classic gameplay!</p>
+    <div>
+      <button type="button" class="btn red" onclick="showPage('download')">Download Now</button>
+      <button type="button" class="btn blue" onclick="document.getElementById('showcase').scrollIntoView({behavior:'smooth'})">See the fusions</button>
+    </div>
+
+    <div class="showcase" id="showcase">
+      <h2 class="show-title"><span>Showcase</span></h2>
+      <div class="stage" id="stage" role="tabpanel" aria-live="polite">
+        <div class="stage-art" id="stageArt"><img id="stageImg" src="3_20260925195554.png" alt="Hypno Tall-nut"></div>
+        <div class="stage-info">
+          <h3 id="stageName">Prismatic Hypno</h3>
+          <p id="stageText">Soon!.</p>
+        </div>
+      </div>
+      <!-- Edit names, text and colors here: data-name, data-text, data-glow -->
+      <div class="picker" role="tablist" aria-label="Fusions">
+        <button class="pick" role="tab" style="--g:#b45cff" data-glow="#b45cff" data-src="3_20260925195554.png" data-name="Hypno Tall-nut" data-text="Soon!" aria-label="Prismatic Hypno"><img src="3_20260925195554.png" alt=""></button>
+        <button class="pick" role="tab" style="--g:#ff2d55" data-glow="#ff2d55" data-src="2_20260922111044.png" data-name="Doom Threepeater" data-text="Soon!" aria-label="Shadow Threepeater"><img src="2_20260922111044.png" alt=""></button>
+        <button class="pick" role="tab" style="--g:#ffb02e" data-glow="#ffb02e" data-src="6_20260902141544.png" data-name="Star Squash" data-text="Can Squash Zombies Twice as compared to a normal Squash and summons a star which stays on the tile for 20 seconds!" aria-label="Amber Squash"><img src="6_20260902141544.png" alt=""></button>
+        <button class="pick" role="tab" style="--g:#2dffa0" data-glow="#2dffa0" data-src="Volt%20star.png" data-name="Volt Star" data-text="Soon!" aria-label="Volt Star"><img src="Volt%20star.png" alt=""></button>
+        <button class="pick" role="tab" style="--g:#ffd84a" data-glow="#ffd84a" data-src="Torch%20star.png" data-name="Torch Star" data-text="Soon!" aria-label="Torch Star"><img src="Torch%20star.png" alt=""></button>
+      </div>
+    </div>
   </section>
 
   <section id="download">
     <div class="card">
       <h2>Download</h2>
       <p>Secure the Evolution mod on your preferred platform below and start fusing your plants.</p>
-      <div class="blue-btn" onclick="downloadFile('https://drive.google.com/file/d/1Kr1q42Rn9k1Pzdbc0TNI_Oyh4vbLPEce/view?usp=drivesdk')">Google Drive</div>
-      <a class="blue-btn" href="https://mega.nz/file/KgxjzLqY#o3WbVZtgH11CTOaPxMmt665rJmExHcp4V8UW55QLEi0" target="_blank">MEGA</a>
-      <a class="blue-btn" href="https://www.mediafire.com/file/9a5h0mfopzdc7ly/Lost_Leaves_1.9.zip/file" target="_blank">MediaFire</a>
+      <a class="btn blue" href="https://drive.google.com/file/d/1Kr1q42Rn9k1Pzdbc0TNI_Oyh4vbLPEce/view?usp=drivesdk" target="_blank" rel="noopener">Google Drive</a>
+      <a class="btn red" href="https://mega.nz/file/KgxjzLqY#o3WbVZtgH11CTOaPxMmt665rJmExHcp4V8UW55QLEi0" target="_blank" rel="noopener">MEGA</a>
+      <a class="btn blue" href="https://www.mediafire.com/file/9a5h0mfopzdc7ly/Lost_Leaves_1.9.zip/file" target="_blank" rel="noopener">MediaFire</a>
     </div>
   </section>
 
@@ -162,7 +220,7 @@
     <div class="card">
       <h2>Developer</h2>
       <p>Created by the one and only <strong>Scaredy Leaves</strong></p>
-      <a class="blue-btn" href="https://youtube.com/@pvz2scaredyleaves" target="_blank">Subscribe on YouTube</a>
+      <a class="btn red" href="https://youtube.com/@pvz2scaredyleaves" target="_blank" rel="noopener">Subscribe on YouTube</a>
     </div>
   </section>
 
@@ -170,49 +228,38 @@
     <div class="card">
       <h2>Community</h2>
       <p>Join the official Evolution Discord to connect with fellow players.</p>
-      <a class="blue-btn" href="https://discord.gg/km75SfmJZz" target="_blank">Join Official Discord</a>
+      <a class="btn blue" href="https://discord.gg/km75SfmJZz" target="_blank" rel="noopener">Join Official Discord</a>
     </div>
   </section>
 
   <section id="tutorial">
     <div class="card">
       <h2>Tutorial</h2>
-      <p>Learn how to properly install the Evolution mod so you can dive right into the action.</p>
-      <a class="blue-btn" href="https://youtu.be/MZhRg4VHmXA?si=G6ud3zc4_LERbJZ1" target="_blank">Watch Tutorial</a>
+      <p>Learn how to properly install PvZ:2 Evolution.</p>
+      <a class="btn red" href="https://youtu.be/MZhRg4VHmXA?si=G6ud3zc4_LERbJZ1" target="_blank" rel="noopener">Watch Tutorial</a>
     </div>
   </section>
 
   <section id="modinfo">
     <div class="card">
       <h2>Mod Information</h2>
-      <p><span class="highlight-name">Evolution</span> reimagines the PvZ2 experience by introducing a deep fusion and upgrade mechanic. Combine your favorite plants to unlock powerful new forms and build the ultimate defense.</p>
-      
+      <p><span class="hl">Evolution</span> reimagines PvZ2 experience by introducing fusion and upgrade mechanic. Combine your favorite plants to unlock powerful new forms.</p>
+
       <ul>
-        <li>Fusion and upgrade mechanics to power up your plants</li>
-        <li>A brand-new, nostalgia-filled PvZ1 World to explore</li>
+        <li>Fusion and upgrade mechanics to power up plants</li>
+        <li>A brand-new, nostalgia-filled Memory Adventure World to explore</li>
         <li>New classic zombies and lawns</li>
         <li>Balanced gameplay that offers a fun, rewarding experience</li>
-        <li>Creative combinations that open up endless strategic possibilities</li>
+        <li>New Glove Mechanic which can help fuse plants</li>
       </ul>
-      
-      <p><span class="highlight-name">Evolution</span> is made <strong>for all PvZ fans</strong> who want to experience the classic nostalgia of the original game while discovering exciting new ways to play!</p>
-    </div>
-  </section>
 
-  <section id="feedback">
-    <div class="card">
-      <h2>Feedback & Comments</h2>
-      <p>What is your favorite plant fusion? Share your thoughts below!</p>
-      <div id="disqus_container_feedback" style="margin-top: 30px; background: rgba(15, 2, 2, 0.6); padding: 20px; border-radius: 15px; border: 1px solid rgba(255,0,60,0.2);">
-        <div id="disqus_thread"></div>
-      </div>
+      <p><span class="hl">Evolution</span> is made <strong>for all PvZ fans</strong> who want to experience the classic nostalgia of the original game while discovering exciting new ways to play!</p>
     </div>
   </section>
 
   <footer>
-    <div style="margin-bottom: 20px;">
-      <!-- Visitor Badge themed to red/black -->
-      <img src="https://api.visitorbadge.io/api/visitors?path=evolution.pvz2mod&countColor=%23ff003c&labelColor=%230d0101&label=VISITORS" alt="Website Visitors">
+    <div>
+      <img src="https://api.visitorbadge.io/api/visitors?path=evolution.pvz2mod&countColor=%232f8cff&labelColor=%2305060f&label=VISITORS" alt="Website Visitors">
     </div>
     © All rights reserved to Scaredy Leaves
   </footer>
@@ -221,58 +268,65 @@
     const clickSound = document.getElementById("clickSound");
     const bgMusic = document.getElementById("bgMusic");
 
-    function playClick() { clickSound.currentTime = 0; clickSound.play().catch(()=>{}); }
+    function playClick() { clickSound.currentTime = 0; clickSound.play().catch(() => {}); }
 
     // AUTO-PLAY MUSIC FALLBACK
-    window.addEventListener('DOMContentLoaded', () => {
-        bgMusic.play().catch(() => {});
-    });
+    window.addEventListener("DOMContentLoaded", () => { bgMusic.play().catch(() => {}); });
+    document.addEventListener("click", () => { if (bgMusic.paused) bgMusic.play().catch(() => {}); }, { once: true });
 
-    document.addEventListener("click", () => {
-        if (bgMusic.paused) {
-            bgMusic.play().catch(()=>{});
-        }
-    }, { once: true });
-
-    document.addEventListener("mousedown", e => { if (e.target.classList.contains("blue-btn") || e.target.tagName === "BUTTON") { e.target.classList.add("pressed"); playClick(); } });
-    document.addEventListener("mouseup", e => { if (e.target.classList.contains("blue-btn") || e.target.tagName === "BUTTON") { e.target.classList.remove("pressed"); } });
+    document.addEventListener("mousedown", e => { const b = e.target.closest(".btn, .menu button"); if (b) { b.classList.add("pressed"); playClick(); } });
+    document.addEventListener("mouseup", () => document.querySelectorAll(".pressed").forEach(b => b.classList.remove("pressed")));
 
     function showPage(id) {
-      document.querySelectorAll("section").forEach(s => s.classList.remove("active"));
-      document.getElementById(id).classList.add("active");
-      window.scrollTo(0, 0); 
-
-      // DISQUS MANAGEMENT (Feedback Only)
-      if (id === 'feedback') {
-          reloadDisqus('evolution-feedback');
-      }
+      document.querySelectorAll("section").forEach(s => s.classList.toggle("active", s.id === id));
+      document.querySelectorAll(".menu button").forEach(b => b.classList.toggle("on", b.dataset.page === id));
+      window.scrollTo(0, 0);
+      if (history.replaceState) history.replaceState(null, "", "#" + id);
     }
 
-    function reloadDisqus(newIdentifier) {
-      if (typeof DISQUS !== 'undefined') {
-          DISQUS.reset({
-              reload: true,
-              config: function () {
-                  this.page.identifier = newIdentifier;
-                  this.page.url = window.location.href.split('#')[0] + '#' + newIdentifier;
-              }
-          });
-      }
+    // SHOWCASE: pick a fusion, auto-advance, tilt on hover, page glow follows
+    const stage = document.getElementById("stage"), art = document.getElementById("stageImg"), artBox = document.getElementById("stageArt");
+    const picks = [...document.querySelectorAll(".pick")];
+    let cur = 0;
+    picks.forEach(p => { new Image().src = p.dataset.src; });
+
+    function select(i, focus) {
+      cur = i; const p = picks[i];
+      picks.forEach((b, j) => { b.setAttribute("aria-selected", j === i); b.tabIndex = j === i ? 0 : -1; });
+      stage.style.setProperty("--glow", p.dataset.glow);
+      document.documentElement.style.setProperty("--accent", p.dataset.glow);
+      art.classList.remove("swap"); void art.offsetWidth;
+      art.src = p.dataset.src; art.alt = p.dataset.name;
+      document.getElementById("stageName").textContent = p.dataset.name;
+      document.getElementById("stageText").textContent = p.dataset.text;
+      art.classList.add("swap");
+      if (focus) p.focus();
     }
+    picks.forEach((p, i) => p.addEventListener("click", () => select(i)));
+    document.querySelector(".picker").addEventListener("keydown", e => {
+      const d = e.key === "ArrowRight" ? 1 : e.key === "ArrowLeft" ? -1 : 0;
+      if (d) { e.preventDefault(); select((cur + d + picks.length) % picks.length, true); }
+    });
+    // the progress bar under the active thumbnail drives the auto-advance (and pauses with it)
+    document.querySelector(".picker").addEventListener("animationend", e => {
+      if (e.animationName === "fill") select((cur + 1) % picks.length);
+    });
+    const pause = on => stage.classList.toggle("paused", on);
+    document.querySelector(".showcase").addEventListener("pointerenter", e => { if (e.pointerType === "mouse") pause(true); });
+    document.querySelector(".showcase").addEventListener("pointerleave", () => pause(false));
+    document.querySelector(".showcase").addEventListener("focusin", () => pause(true));
+    document.querySelector(".showcase").addEventListener("focusout", () => pause(false));
+    artBox.addEventListener("mousemove", e => {
+      const r = artBox.getBoundingClientRect();
+      art.style.setProperty("--ry", ((e.clientX - r.left) / r.width - 0.5) * 18 + "deg");
+      art.style.setProperty("--rx", -((e.clientY - r.top) / r.height - 0.5) * 18 + "deg");
+    });
+    artBox.addEventListener("mouseleave", () => { art.style.setProperty("--rx", "0deg"); art.style.setProperty("--ry", "0deg"); });
+    select(0);
 
-    // INITIAL DISQUS LOAD (Configured for Evolution)
-    var disqus_config = function () {
-        this.page.url = window.location.href;
-        this.page.identifier = 'evolution-home';
-    };
-    (function() {
-        var d = document, s = d.createElement('script');
-        s.src = 'https://lost-leaves.disqus.com/embed.js';
-        s.setAttribute('data-timestamp', +new Date());
-        (d.head || d.body).appendChild(s);
-    })();
-
-    function downloadFile(url) { const a = document.createElement("a"); a.href = url; document.body.appendChild(a); a.click(); document.body.removeChild(a); }
+    // deep links: index.html#download
+    const h = location.hash.slice(1);
+    if (h && document.querySelector("section#" + h)) showPage(h);
   </script>
 </body>
 </html>

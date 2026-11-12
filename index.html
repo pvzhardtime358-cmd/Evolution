@@ -157,11 +157,6 @@
   <div class="orb o1"></div>
   <div class="orb o2"></div>
 
-  <!-- AUTO-PLAY MUSIC FALLBACK -->
-  <audio id="bgMusic" loop autoplay>
-    <source src="evolution-theme.mp3" type="audio/mpeg">
-  </audio>
-
   <audio id="clickSound">
     <source src="https://freesound.org/data/previews/256/256113_3263906-lq.mp3">
   </audio>
@@ -236,7 +231,7 @@
     <div class="card">
       <h2>Tutorial</h2>
       <p>Learn how to properly install PvZ:2 Evolution.</p>
-      <a class="btn red" href="https://youtu.be/MZhRg4VHmXA?si=G6ud3zc4_LERbJZ1" target="_blank" rel="noopener">Watch Tutorial</a>
+      <a class="btn red" href="https://youtu.be/YhWsTgzYoyc" target="_blank" rel="noopener">Watch Tutorial</a>
     </div>
   </section>
 
@@ -266,13 +261,8 @@
 
   <script>
     const clickSound = document.getElementById("clickSound");
-    const bgMusic = document.getElementById("bgMusic");
 
     function playClick() { clickSound.currentTime = 0; clickSound.play().catch(() => {}); }
-
-    // AUTO-PLAY MUSIC FALLBACK
-    window.addEventListener("DOMContentLoaded", () => { bgMusic.play().catch(() => {}); });
-    document.addEventListener("click", () => { if (bgMusic.paused) bgMusic.play().catch(() => {}); }, { once: true });
 
     document.addEventListener("mousedown", e => { const b = e.target.closest(".btn, .menu button"); if (b) { b.classList.add("pressed"); playClick(); } });
     document.addEventListener("mouseup", () => document.querySelectorAll(".pressed").forEach(b => b.classList.remove("pressed")));
